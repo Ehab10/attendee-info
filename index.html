@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendee Information</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="infoCard" class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 transition-opacity duration-500 opacity-0">
+        <!-- This is where the attendee's information will be displayed -->
+        <div class="text-center mb-6">
+            <img id="avatar" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-md" src="https://placehold.co/96x96/E2E8F0/4A5568?text=👤" alt="Avatar">
+            <h1 id="name" class="text-3xl font-bold text-gray-800"></h1>
+            <p id="team" class="text-lg text-indigo-600 font-semibold"></p>
+        </div>
+
+        <div class="space-y-4 text-gray-700">
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                <span class="font-bold w-32">Room No:</span>
+                <span id="roomNo" class="font-mono text-gray-900"></span>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                <span class="font-bold w-32">Bus No:</span>
+                <span id="busNo" class="font-mono text-gray-900"></span>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                <span class="font-bold w-32">Section:</span>
+                <span id="sectionNumber" class="font-mono text-gray-900"></span>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                <span class="font-bold w-32">Quiet Time Leader:</span>
+                <span id="quietTimeLeader" class="text-gray-900"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- This card shows if the ID is not found -->
+    <div id="notFoundCard" class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 text-center hidden">
+        <h1 class="text-2xl font-bold text-red-600">Attendee Not Found</h1>
+        <p class="text-gray-600 mt-2">Please check the ID in the URL and try again.</p>
+    </div>
+
+
+    <script>
+        // --- All your data goes here ---
+        // You can add as many people as you want. Just follow the format.
+        const peopleData = {
+            "1": {
+                name: "Alex Johnson",
+                roomNo: "201A",
+                team: "Blue Eagles",
+                busNo: "3",
+                sectionNumber: "Alpha",
+                quietTimeLeader: "Sarah Chen",
+                avatar: "https://placehold.co/96x96/3B82F6/FFFFFF?text=AJ"
+            },
+            "2": {
+                name: "Maria Garcia",
+                roomNo: "305B",
+                team: "Red Hawks",
+                busNo: "1",
+                sectionNumber: "Bravo",
+                quietTimeLeader: "David Lee",
+                avatar: "https://placehold.co/96x96/EF4444/FFFFFF?text=MG"
+            },
+            "3": {
+                name: "Chris Williams",
+                roomNo: "112A",
+                team: "Green Giants",
+                busNo: "2",
+                sectionNumber: "Charlie",
+                quietTimeLeader: "Emily White",
+                avatar: "https://placehold.co/96x96/22C55E/FFFFFF?text=CW"
+            }
+            // Add more people here, e.g., "4": { ... }
+        };
+
+        // --- This code runs when the page loads ---
+        window.onload = function() {
+            // 1. Get the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id'); // Get the 'id' from the URL (e.g., ?id=1)
+
+            // 2. Find the person's data using the id
+            const person = peopleData[id];
+
+            const infoCard = document.getElementById('infoCard');
+            const notFoundCard = document.getElementById('notFoundCard');
+
+            // 3. Check if we found a person with that id
+            if (person) {
+                // If found, put their info on the page
+                document.getElementById('name').textContent = person.name;
+                document.getElementById('team').textContent = person.team;
+                document.getElementById('roomNo').textContent = person.roomNo;
+                document.getElementById('busNo').textContent = person.busNo;
+                document.getElementById('sectionNumber').textContent = person.sectionNumber;
+                document.getElementById('quietTimeLeader').textContent = person.quietTimeLeader;
+                document.getElementById('avatar').src = person.avatar;
+
+                // Make the card visible
+                infoCard.classList.remove('opacity-0');
+            } else {
+                // If not found, show the "Not Found" message
+                notFoundCard.classList.remove('hidden');
+            }
+        };
+    </script>
+</body>
+</html>
