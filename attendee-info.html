@@ -45,6 +45,13 @@
                 </a>
             </div>
             <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                <span class="font-bold w-32">Team Leader:</span>
+                <span id="teamLeader" class="font-mono text-gray-900"></span>
+                <a id="teamLeaderPhoneLink" href="#" class="text-blue-500 hover:text-blue-600 transition-colors duration-200" style="margin: 0px 20px;">
+                    <i class="fas fa-phone text-xl"></i>
+                </a>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
                 <span class="font-bold w-32">Quiet Time:</span>
                 <span id="quietTimeLeader" class="text-gray-900 mr-2"></span>
                 <a id="quietTimeLeaderPhoneLink" href="#" class="text-blue-500 hover:text-blue-600 transition-colors duration-200" style="margin: 0px 20px;">
@@ -2044,10 +2051,45 @@
 
 
                 // Hide Team if empty
-                if (person.team && person.team !== "-") {
+                const teamLeaderPhoneLink = document.getElementById('teamLeaderPhoneLink');
+                if (person.team && person.team !== "-" ) {
                     document.getElementById('team').classList.remove('hidden');
+                    teamLeaderPhoneLink.classList.remove('hidden');
+                    if (person.name !== "Kyrillos Waheed Kamel Abd El-Masieh" && person.name !== "Kirollos Boles Kamal Boles" && person.name !== "Marc Essam Erian Hanna" && person.name !== "Sharpel Malak Rateb Wesmen" && person.name !== "Pola Nabil Wadid Tawfik") {
+                        switch(person.team) {
+                        case "1":
+                            document.getElementById('teamLeader').textContent = "Kyrillos Waheed"
+                            teamLeaderPhoneLink.href = `tel:01281412579`;
+                            break;
+                        case "2":
+                            document.getElementById('teamLeader').textContent = "Kirollos Boles"
+                            teamLeaderPhoneLink.href = `tel:01279891070`;                            
+                            break;
+                        case "3":
+                            document.getElementById('teamLeader').textContent = "Marc Essam"
+                            teamLeaderPhoneLink.href = `tel:01285557529`;                            
+                            break;
+                        case "4":
+                            document.getElementById('teamLeader').textContent = "Sharpel Malak"
+                            teamLeaderPhoneLink.href = `tel:01110760281`;                            
+                            break;
+                        case "5":
+                            document.getElementById('teamLeader').textContent = "Pola Nabil"
+                            teamLeaderPhoneLink.href = `tel:01223745322`;                            
+                            break;
+                        default:
+                            document.getElementById('team').classList.add('hidden');
+                            teamLeaderPhoneLink.classList.add('hidden');
+                            document.getElementById('teamLeader').textContent = "-"
+                        }
+                    } else {
+                        teamLeaderPhoneLink.classList.add('hidden');
+                        document.getElementById('teamLeader').textContent = "-"
+                    }
                 } else {
                     document.getElementById('team').classList.add('hidden');
+                    teamLeaderPhoneLink.classList.add('hidden');
+                    document.getElementById('teamLeader').textContent = "-"
                 }
                 
                 // Make the card visible
