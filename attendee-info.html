@@ -2021,6 +2021,13 @@
                 }
 
 
+                // Hide Team if empty
+                if (person.team && person.team !== "-") {
+                    document.getElementById('teamRow').classList.remove('hidden');
+                } else {
+                    document.getElementById('teamRow').classList.add('hidden');
+                }
+                
                 // Make the card visible
                 infoCard.classList.remove('opacity-0');
             } else {
