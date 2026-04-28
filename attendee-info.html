@@ -101,7 +101,7 @@
 
     <script>
         // Configuration
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyy-Hag4bYrEFcW79d-DoR5r_jVc-PBhPrpuRkMmNpqNdfJwjXE23C1-mhheZ8D9uYxaw/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUBGGpeLkQr4wAMhIfHpzvTG7qdD0Sj1BzoVmtylhgWw9gZE7ijVuVjb-ahaGcqltvRQ/exec";
         const CACHE_KEY = "attendeeDataCache";
         const CACHE_EXPIRY_MINUTES = 60;
 
@@ -151,7 +151,7 @@
             }
         
             const data = await response.json();
-            console.log("Success:", data);
+            // console.log("Success:", data);
             return data;
             // Handle your attendee info here
           } catch (error) {
@@ -218,12 +218,12 @@
 
             // Hash the ID
             const hash = CryptoJS.SHA256(id).toString();
-            console.log("hash "+hash);
+            // console.log("hash "+hash);
 
             // Find attendee
             const attendee = peopleData[hash];
-            console.log("peopleData "+peopleData);
-            console.log("attendee "+attendee);
+            // console.log("peopleData "+peopleData);
+            // console.log("attendee "+attendee);
 
             if (!attendee) {
                 showNotFound();
