@@ -101,7 +101,7 @@
 
     <script>
         // Configuration
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw1Se_RZv9kLcZMYJ9gb25xc9kuCLqPEZLU52YJyJcfYNmWcYwa-5QcA9Donew1r6wM9g/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxDDICeAP6izG_k-Zii_JW2pVcMPzxhc2prRuBr5uypHy1rJl6VfjkXphuzEVKeGZbcgw/exec";
         const CACHE_KEY = "attendeeDataCache";
         const CACHE_EXPIRY_MINUTES = 60;
 
@@ -142,6 +142,23 @@
             });
         }
 
+        async function loadData() {
+          try {
+            const response = await fetch(APPS_SCRIPT_URL);
+            
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+        
+            const data = await response.json();
+            console.log("Success:", data);
+            // Handle your attendee info here
+          } catch (error) {
+            console.error("Fetch error:", error);
+          }
+            return data;
+        }
+
         async function loadPeopleData() {
             try {
                 // Check if data is cached and not expired
@@ -159,7 +176,7 @@
 
                 // Fetch fresh data from Apps Script using JSONP
                 console.log("↻ Fetching data from Apps Script...");
-                const data = await loadPeopleDataJSONP();
+                const data = await loadData();
                 
                 peopleData = data;
 
