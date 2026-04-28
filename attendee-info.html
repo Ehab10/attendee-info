@@ -218,9 +218,12 @@
 
             // Hash the ID
             const hash = CryptoJS.SHA256(id).toString();
+            console.log("hash "+hash);
 
             // Find attendee
             const attendee = peopleData[hash];
+            console.log("peopleData "+peopleData);
+            console.log("attendee "+attendee);
 
             if (!attendee) {
                 showNotFound();
