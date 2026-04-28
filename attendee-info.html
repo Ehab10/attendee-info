@@ -101,7 +101,7 @@
 
     <script>
         // Configuration
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxd27kupyQPSX2w4DxHDiW3TedbCfoosY-KO5BETlfdZXUmDK1HB-r71_k_rIDuIf6zXQ/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxihR5RMo3TEzdMuI3JJ6D3fTukLigFxn4RZkWjouyLz7Is4fwtYzUmw5202AXDyL3uZw/exec?id=";
         const CACHE_KEY = "attendeeDataCache";
         const CACHE_EXPIRY_MINUTES = 60;
 
@@ -144,7 +144,10 @@
 
         async function loadData() {
           try {
-            const response = await fetch(APPS_SCRIPT_URL);
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get("id");
+            const hash = CryptoJS.SHA256(id).toString();
+            const response = await fetch(APPS_SCRIPT_URL+hash);
             
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -203,6 +206,7 @@
             }
         }
 
+        
         function displayAttendee() {
             // Hide loading card
             document.getElementById("loadingCard").classList.add("hidden");
