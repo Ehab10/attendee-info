@@ -258,10 +258,9 @@
             // setupPhoneLink("quietTimeLeaderPhoneLink", attendee.quietTimeLeaderPhone);
 
             // handling missing team
-            if (attendee.name === '-') {
+            if (attendee.team === '-') {
                 document.getElementById("team").remove();
             }
-//https://foryourfatherknows.online/attendee-info.html?id=01207139526
             // Show card
             const card = document.getElementById("infoCard");
             card.classList.remove("hidden");
