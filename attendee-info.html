@@ -15,6 +15,7 @@
 
         .text-gray-900 {
             text-align: center;
+            margin: 10px;
         }
         
         .loading {
@@ -87,11 +88,11 @@
             </div> -->
         </div>
 
-        <div class="mt-6 text-center">
+        <!-- <div class="mt-6 text-center">
             <button onclick="refreshData()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                 <i class="fas fa-sync-alt mr-2"></i> Refresh Data
             </button>
-        </div>
+        </div> -->
     </div>
 
     <div id="notFoundCard" class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 text-center hidden">
@@ -101,7 +102,7 @@
 
     <script>
         // Configuration
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxihR5RMo3TEzdMuI3JJ6D3fTukLigFxn4RZkWjouyLz7Is4fwtYzUmw5202AXDyL3uZw/exec?id=";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEoXBLA5n4pG1D5jnI_G5Ru-4xrkWdnde5CcdigmBo9J7TZz4wFGeTWa5USY2Ql_rerA/exec?id=";
         const CACHE_KEY = "attendeeDataCache";
         const CACHE_EXPIRY_MINUTES = 60;
 
