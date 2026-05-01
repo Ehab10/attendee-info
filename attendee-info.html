@@ -240,18 +240,18 @@
 
             // Populate card
             document.getElementById("name").textContent = attendee.name;
-            document.getElementById("roomNo").textContent = attendee.roomNo;
+            // document.getElementById("roomNo").textContent = attendee.roomNo;
             document.getElementById("busNo").textContent = attendee.busNo;
             document.getElementById("busLeader").textContent = attendee.busLeader;
             document.getElementById("team").textContent = `Team ${attendee.team}`;
-            document.getElementById("teamLeader").textContent = attendee.teamLeader;
-            document.getElementById("quietTimeLeader").textContent = attendee.quietTimeLeader;
+            // document.getElementById("teamLeader").textContent = attendee.teamLeader;
+            // document.getElementById("quietTimeLeader").textContent = attendee.quietTimeLeader;
             document.getElementById("avatar").src = attendee.avatar;
 
             // Set phone links
             setupPhoneLink("busLeaderPhoneLink", attendee.busLeaderPhone);
-            setupPhoneLink("teamLeaderPhoneLink", attendee.teamLeaderPhone);
-            setupPhoneLink("quietTimeLeaderPhoneLink", attendee.quietTimeLeaderPhone);
+            // setupPhoneLink("teamLeaderPhoneLink", attendee.teamLeaderPhone);
+            // setupPhoneLink("quietTimeLeaderPhoneLink", attendee.quietTimeLeaderPhone);
 
             // Show card
             const card = document.getElementById("infoCard");
