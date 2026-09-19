@@ -334,7 +334,8 @@
             // console.log("peopleData "+peopleData);
             // console.log("attendee "+attendee);
 
-            if (!attendee) {
+            // Empty response ({}, null, failed fetch) means the attendee wasn't found
+            if (!attendee || Object.keys(attendee).length === 0) {
                 showNotFound();
                 return;
             }
