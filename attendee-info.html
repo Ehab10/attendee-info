@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendee Information</title>
+    <title>بيانات العضو</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Cairo', 'Inter', sans-serif;
         }
 
         #team {
@@ -41,18 +41,53 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Bible study places */
+        .font-arabic {
+            font-family: 'Cairo', 'Inter', sans-serif;
+        }
+
+        #studyDialog {
+            width: min(92vw, 26rem);
+            max-height: 90vh;
+            margin: auto;
+            padding: 0;
+            border: 0;
+            border-radius: 1.25rem;
+            background: #fff;
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35);
+            overflow: hidden;
+        }
+
+        #studyDialog::backdrop {
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(3px);
+        }
+
+        #studyDialog[open] {
+            animation: sheetIn 0.25s ease-out;
+        }
+
+        @keyframes sheetIn {
+            from { opacity: 0; transform: translateY(16px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #studyDialog[open] { animation: none; }
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
     <div id="loadingCard" class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 text-center">
         <div class="spinner mx-auto mb-4"></div>
-        <p class="text-gray-600">Loading attendee data...</p>
+        <p class="text-gray-600">جارٍ تحميل بيانات العضو...</p>
     </div>
 
     <div id="infoCard" class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 transition-opacity duration-500 opacity-0 hidden">
         <div class="text-center mb-6">
-            <img id="avatar" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-md" src="https://placehold.co/96x96/E2E8F0/4A5568?text=👤" alt="Avatar">
+            <img id="avatar" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-md" src="https://placehold.co/96x96/E2E8F0/4A5568?text=👤" alt="صورة العضو">
             <h1 id="name" class="text-3xl font-bold text-gray-800"></h1>
             <div class="flex items-center justify-center gap-2">
                 <p id="team" class="text-lg text-indigo-600 font-semibold"></p>
@@ -60,58 +95,148 @@
         </div>
 
         <div class="space-y-4 text-gray-700">
-            <!-- <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <span class="font-bold w-32">Room No:</span>
-                <span id="roomNo" class="font-mono text-gray-900"></span>
-            </div> -->
             <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <span class="font-bold w-32">Bus No:</span>
-                <span id="busNo" class="font-mono text-gray-900"></span>
+                <span class="font-bold w-32">رقم الغرفة:</span>
+                <span id="roomNo" class="text-gray-900 me-2"></span>
             </div>
             <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <span class="font-bold w-32">Bus Leader:</span>
-                <span id="busLeader" class="font-mono text-gray-900"></span>
-                <a id="busLeaderPhoneLink" href="#" class="text-blue-500 hover:text-blue-600 transition-colors duration-200" style="margin: 0px 20px;">
-                    <i class="fas fa-phone text-xl"></i>
-                </a>
+                <span class="font-bold w-32">رقم الأتوبيس:</span>
+                <span id="busNo" class="text-gray-900 me-2"></span>
             </div>
-            <!-- <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <span class="font-bold w-32">Team Leader:</span>
-                <span id="teamLeader" class="font-mono text-gray-900"></span>
-                <a id="teamLeaderPhoneLink" href="#" class="text-blue-500 hover:text-blue-600 transition-colors duration-200" style="margin: 0px 20px;">
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                <span class="font-bold w-32">قائد الأتوبيس:</span>
+                <span id="busLeader" class="text-gray-900 me-2"></span>
+                <a id="busLeaderPhoneLink" href="#" class="ms-auto ps-3 pe-1 py-1 text-blue-500 hover:text-blue-600 transition-colors duration-200">
                     <i class="fas fa-phone text-xl"></i>
                 </a>
             </div>
             <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                <span class="font-bold w-32">Quiet Time:</span>
-                <span id="quietTimeLeader" class="text-gray-900 mr-2"></span>
-                <a id="quietTimeLeaderPhoneLink" href="#" class="text-blue-500 hover:text-blue-600 transition-colors duration-200" style="margin: 0px 20px;">
+                <span class="font-bold w-32">قائد الفريق:</span>
+                <span id="teamLeader" class="text-gray-900 me-2"></span>
+                <a id="teamLeaderPhoneLink" href="#" class="ms-auto ps-3 pe-1 py-1 text-blue-500 hover:text-blue-600 transition-colors duration-200">
                     <i class="fas fa-phone text-xl"></i>
                 </a>
-            </div> -->
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                <span class="font-bold w-32">الخلوة مع:</span>
+                <span id="quietTimeLeader" class="text-gray-900 me-2"></span>
+                <a id="quietTimeLeaderPhoneLink" href="#" class="ms-auto ps-3 pe-1 py-1 text-blue-500 hover:text-blue-600 transition-colors duration-200">
+                    <i class="fas fa-phone text-xl"></i>
+                </a>
+            </div>
         </div>
 
-        <!-- <div class="mt-6 text-center">
-            <button onclick="refreshData()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                <i class="fas fa-sync-alt mr-2"></i> Refresh Data
-            </button>
-        </div> -->
+        <button type="button" id="studyPlacesBtn" onclick="openStudyPlaces()" dir="rtl"
+            class="font-arabic mt-6 w-full flex items-center justify-between gap-3 rounded-xl bg-gradient-to-l from-indigo-600 to-blue-500 px-5 py-3.5 text-white shadow-md transition hover:shadow-lg hover:brightness-110 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-300 active:scale-[0.99]">
+            <span class="flex items-center gap-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20"><i class="fas fa-book-open"></i></span>
+                <span class="text-lg font-bold">أماكن درس الكتاب</span>
+            </span>
+            <i class="fas fa-chevron-left text-sm opacity-80"></i>
+        </button>
+
     </div>
 
     <div id="notFoundCard" class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 text-center hidden">
-        <h1 class="text-2xl font-bold text-red-600">Attendee Not Found</h1>
-        <p class="text-gray-600 mt-2">Please check the ID in the URL and try again.</p>
+        <h1 class="text-2xl font-bold text-red-600">لم يتم العثور على العضو</h1>
+        <p class="text-gray-600 mt-2">يرجى التحقق من الرقم في الرابط والمحاولة مرة أخرى.</p>
     </div>
+
+
+    <dialog id="studyDialog" dir="rtl" class="font-arabic" aria-labelledby="studyTitle">
+        <div class="bg-gradient-to-l from-indigo-600 to-blue-500 px-6 pb-6 pt-5 text-white">
+            <div class="flex items-start justify-between">
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-xl"><i class="fas fa-book-open"></i></div>
+                <button type="button" onclick="closeStudyPlaces()" aria-label="إغلاق"
+                    class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 transition hover:bg-white/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <h2 id="studyTitle" class="mt-4 text-2xl font-bold">أماكن درس الكتاب</h2>
+            <p class="mt-1 text-sm text-indigo-100">مكان الدرس في كل يوم</p>
+        </div>
+        <ul id="studyList" class="space-y-3 bg-gray-50 p-5"></ul>
+    </dialog>
 
     <script>
         // Configuration
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcgKB6yHiypk1wzoHs5cKdcfw1kxz9T4J2Xjo_PzNWJHDSAGgxc9RjgSkYShrCZjc/exec?id=";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-VjzoLvqWdzR5A2uLyG0YrWUmzn-6LO3mlitTPPJX5vruY_NKQ5t-hvL6gN6vI7tf/exec?id=";
         const CACHE_KEY = "attendeeDataCache";
 
         // Caching is disabled: drop any data cached by earlier versions of this page
         try { localStorage.removeItem(CACHE_KEY); } catch (e) {}
 
         let peopleData = {};
+
+        // Bible study places come from the Apps Script response as `studyPlaces`:
+        // an array in day order, each item either a string ("القاعة ١") or { day, place }
+        const DAY_LABELS = ["اليوم الأول", "اليوم الثاني", "اليوم الثالث"];
+        let studyPlaces = [];
+
+        function normalizeStudyPlaces(raw) {
+            if (!Array.isArray(raw)) return [];
+            return raw
+                .map((item, i) => {
+                    const isObj = item && typeof item === "object";
+                    const place = String((isObj ? item.place : item) ?? "").trim();
+                    const day = (isObj && item.day ? String(item.day).trim() : "") || DAY_LABELS[i] || `اليوم ${i + 1}`;
+                    return { day, place };
+                })
+                .filter(item => item.place && item.place !== "-");
+        }
+
+        function placeIcon(place) {
+            return /كنيس|church/i.test(place) ? "fa-church" : "fa-door-open";
+        }
+
+        function renderStudyPlaces() {
+            const list = document.getElementById("studyList");
+            list.innerHTML = "";
+            studyPlaces.forEach((item, i) => {
+                const li = document.createElement("li");
+                li.className = "flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-100";
+
+                const badge = document.createElement("span");
+                badge.className = "flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-lg font-bold text-indigo-600";
+                badge.textContent = (i + 1).toLocaleString("ar-EG");
+
+                const text = document.createElement("div");
+                text.className = "min-w-0 flex-1";
+                const day = document.createElement("p");
+                day.className = "text-sm text-gray-500";
+                day.textContent = item.day;
+                const place = document.createElement("p");
+                place.className = "text-lg font-bold text-gray-800";
+                place.textContent = item.place;
+                text.append(day, place);
+
+                const icon = document.createElement("i");
+                icon.className = "fas " + placeIcon(item.place) + " text-xl text-blue-400";
+
+                li.append(badge, text, icon);
+                list.appendChild(li);
+            });
+        }
+
+        // Show the button only when the response has study places
+        function setupStudyPlaces(raw) {
+            studyPlaces = normalizeStudyPlaces(raw);
+            document.getElementById("studyPlacesBtn").classList.toggle("hidden", studyPlaces.length === 0);
+        }
+
+        function openStudyPlaces() {
+            renderStudyPlaces();
+            document.getElementById("studyDialog").showModal();
+        }
+
+        function closeStudyPlaces() {
+            document.getElementById("studyDialog").close();
+        }
+
+        // Close when tapping the backdrop
+        document.getElementById("studyDialog").addEventListener("click", (e) => {
+            if (e.target === e.currentTarget) closeStudyPlaces();
+        });
 
         // Load data on page load
         document.addEventListener("DOMContentLoaded", async () => {
@@ -216,18 +341,21 @@
 
             // Populate card
             document.getElementById("name").textContent = attendee.name;
-            // document.getElementById("roomNo").textContent = attendee.roomNo;
+            document.getElementById("roomNo").textContent = attendee.roomNo;
             document.getElementById("busNo").textContent = attendee.busNo;
             document.getElementById("busLeader").textContent = attendee.busLeader;
-            document.getElementById("team").textContent = `Team ${attendee.team}`;
-            // document.getElementById("teamLeader").textContent = attendee.teamLeader;
-            // document.getElementById("quietTimeLeader").textContent = attendee.quietTimeLeader;
+            document.getElementById("team").textContent = `فريق ${attendee.team}`;
+            document.getElementById("teamLeader").textContent = attendee.teamLeader;
+            document.getElementById("quietTimeLeader").textContent = attendee.quietTimeLeader;
             document.getElementById("avatar").src = attendee.avatar;
 
             // Set phone links
             setupPhoneLink("busLeaderPhoneLink", attendee.busLeaderPhone);
-            // setupPhoneLink("teamLeaderPhoneLink", attendee.teamLeaderPhone);
-            // setupPhoneLink("quietTimeLeaderPhoneLink", attendee.quietTimeLeaderPhone);
+            setupPhoneLink("teamLeaderPhoneLink", attendee.teamLeaderPhone);
+            setupPhoneLink("quietTimeLeaderPhoneLink", attendee.quietTimeLeaderPhone);
+
+            // Bible study places
+            setupStudyPlaces(attendee.studyPlaces);
 
             // handling missing team
             if (attendee.team === '-') {
@@ -258,7 +386,7 @@
             const btn = event.target.closest("button");
             const originalHTML = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ التحديث...';
 
             try {
                 // Reload data
@@ -273,14 +401,6 @@
                 btn.innerHTML = originalHTML;
             }
         }
-
-        // // Optional: Refresh data every 60 minutes
-        // setInterval(() => {
-        //     loadPeopleData().then(() => {
-        //         console.log("↻ Auto-refreshed data");
-        //         displayAttendee();
-        //     }).catch(err => console.error("Auto-refresh failed:", err));
-        // }, 60 * 60 * 1000);
     </script>
 </body>
 </html>
