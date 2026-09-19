@@ -105,9 +105,11 @@
 
     <script>
         // Configuration
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEoXBLA5n4pG1D5jnI_G5Ru-4xrkWdnde5CcdigmBo9J7TZz4wFGeTWa5USY2Ql_rerA/exec?id=";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcgKB6yHiypk1wzoHs5cKdcfw1kxz9T4J2Xjo_PzNWJHDSAGgxc9RjgSkYShrCZjc/exec?id=";
         const CACHE_KEY = "attendeeDataCache";
-        const CACHE_EXPIRY_MINUTES = 60;
+
+        // Caching is disabled: drop any data cached by earlier versions of this page
+        try { localStorage.removeItem(CACHE_KEY); } catch (e) {}
 
         let peopleData = {};
 
@@ -154,7 +156,7 @@
             console.log("id ..."+id);
 
             const hash = CryptoJS.SHA256(id).toString();
-            const response = await fetch(APPS_SCRIPT_URL+hash);
+            const response = await fetch(APPS_SCRIPT_URL+hash, { cache: "no-store" });
             
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -171,44 +173,14 @@
 
         async function loadPeopleData() {
             try {
-                // Check if data is cached and not expired
-                const cached = localStorage.getItem(CACHE_KEY);
-                if (cached) {
-                    const { data, timestamp } = JSON.parse(cached);
-                    const ageMinutes = (Date.now() - timestamp) / 60000;
-                    
-                    if (ageMinutes < CACHE_EXPIRY_MINUTES) {
-                        peopleData = data;
-                        console.log("✓ Loaded data from cache");
-                        return;
-                    }
-                }
-
-                // Fetch fresh data from Apps Script using JSONP
                 console.log("↻ Fetching data from Apps Script...");
                 const data = await loadData();
-                
-                peopleData = data;
 
-                // Cache the data
-                localStorage.setItem(CACHE_KEY, JSON.stringify({
-                    data: peopleData,
-                    timestamp: Date.now()
-                }));
+                peopleData = data;
 
                 console.log(`✓ Loaded ${Object.keys(peopleData).length} attendees from Apps Script`);
             } catch (error) {
                 console.error("✗ Error loading data:", error);
-                
-                // Try to use cached data even if expired
-                const cached = localStorage.getItem(CACHE_KEY);
-                if (cached) {
-                    const { data } = JSON.parse(cached);
-                    peopleData = data;
-                    console.warn("⚠ Using expired cache due to fetch error");
-                    return;
-                }
-
                 showNotFound();
             }
         }
@@ -289,9 +261,6 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
 
             try {
-                // Clear cache
-                localStorage.removeItem(CACHE_KEY);
-
                 // Reload data
                 await loadPeopleData();
                 displayAttendee();
